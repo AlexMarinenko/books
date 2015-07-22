@@ -46,9 +46,25 @@ class BookSearch extends Book
     public function search($params)
     {
         $query = Book::find();
+        $query->leftJoin('authors', 'authors.id = books.author_id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->setSort([
+            'attributes' => [
+                'id',
+                'name',
+                'date_published',
+                'date_create',
+                'preview',
+                'author.fullname' => [
+                    'asc' => ['authors.lastname' => SORT_ASC],
+                    'desc' => ['authors.lastname' => SORT_DESC],
+                    'label' => 'Author'
+                ]
+            ]
         ]);
 
         $this->load($params);
